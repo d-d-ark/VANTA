@@ -1,0 +1,91 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "vanta": {
+      "v1": {
+        "sessions": {
+          "$session": {
+            ".read": "auth != null && auth.token.vanta_server === true",
+            ".write": "auth != null && auth.token.vanta_server === true && $session.matches(/^[A-Za-z0-9_-]{20,128}$/) && ((!data.exists() && newData.hasChildren(['meta', 'snapshot', 'participants']) && newData.child('meta').child('ownerUid').val() === newData.child('participants').child('0').child('uid').val()) || (data.exists() && !newData.exists()))",
+            "meta": {
+              ".read": "auth != null && (auth.token.vanta_server === true || (auth.token.vanta_room === $session && auth.token.vanta_expires_at > now && auth.token.vanta_protocol === 3 && auth.token.vanta_release === 54))",
+              ".write": "auth != null && auth.token.vanta_server === true",
+              ".validate": "newData.hasChildren(['version', 'releaseVersion', 'ownerUid', 'createdAt', 'maxParticipants', 'liveCursor']) && newData.child('version').val() === 1 && newData.child('releaseVersion').val() === 54 && (!data.exists() || newData.child('releaseVersion').val() === data.child('releaseVersion').val()) && newData.child('ownerUid').isString() && newData.child('ownerUid').val().length <= 128 && newData.child('createdAt').isNumber() && newData.child('maxParticipants').isNumber() && newData.child('maxParticipants').val() >= 2 && newData.child('maxParticipants').val() <= 5 && newData.child('liveCursor').isBoolean() && (!newData.parent().child('participants').child('2').child('expiresAt').isNumber() || newData.parent().child('participants').child('2').child('expiresAt').val() <= now || newData.child('maxParticipants').val() >= 3) && (!newData.parent().child('participants').child('3').child('expiresAt').isNumber() || newData.parent().child('participants').child('3').child('expiresAt').val() <= now || newData.child('maxParticipants').val() >= 4) && (!newData.parent().child('participants').child('4').child('expiresAt').isNumber() || newData.parent().child('participants').child('4').child('expiresAt').val() <= now || newData.child('maxParticipants').val() >= 5) && (!data.exists() || newData.child('ownerUid').val() === data.child('ownerUid').val()) && (!newData.hasChild('closingUntil') || (newData.child('closingUntil').isNumber() && newData.child('closingUntil').val() <= now + 60000))",
+              "version": { ".validate": true },
+              "releaseVersion": { ".validate": true },
+              "ownerUid": { ".validate": true },
+              "createdAt": { ".validate": true },
+              "maxParticipants": { ".validate": true },
+              "liveCursor": { ".validate": true },
+              "closingUntil": { ".validate": true },
+              "$other": { ".validate": false }
+            },
+            "snapshot": {
+              ".read": "auth != null && (auth.token.vanta_server === true || (auth.token.vanta_room === $session && auth.token.vanta_expires_at > now && auth.token.vanta_protocol === 3 && auth.token.vanta_release === 54 && ((data.parent().child('participants').child('0').child('uid').val() === auth.uid && data.parent().child('participants').child('0').child('expiresAt').val() > now) || (data.parent().child('participants').child('1').child('uid').val() === auth.uid && data.parent().child('participants').child('1').child('expiresAt').val() > now) || (data.parent().child('participants').child('2').child('uid').val() === auth.uid && data.parent().child('participants').child('2').child('expiresAt').val() > now) || (data.parent().child('participants').child('3').child('uid').val() === auth.uid && data.parent().child('participants').child('3').child('expiresAt').val() > now) || (data.parent().child('participants').child('4').child('uid').val() === auth.uid && data.parent().child('participants').child('4').child('expiresAt').val() > now))))",
+              ".write": "auth != null && auth.token.vanta_server === true",
+              ".validate": "newData.hasChildren(['revision', 'updatedAt', 'updatedBy', 'project']) && newData.child('revision').isNumber() && newData.child('updatedAt').isNumber() && newData.child('updatedAt').val() >= now - 300000 && newData.child('updatedAt').val() <= now + 60000 && newData.child('updatedBy').isString() && newData.child('updatedBy').val().length >= 8 && newData.child('updatedBy').val().length <= 64 && ((!data.exists() && newData.child('revision').val() === 1) || (data.exists() && newData.child('revision').val() === data.child('revision').val() + 1)) && (!data.hasChild('syncVersion') || newData.child('syncVersion').val() === data.child('syncVersion').val()) && ((!newData.hasChild('syncVersion') && !newData.hasChild('chunkVersion') && !newData.hasChild('chunks') && !newData.hasChild('latest') && newData.child('revision').val() === 1 && newData.child('project').child('_vantaInitializing').val() === true) || (newData.child('syncVersion').val() === 2 && newData.child('chunkVersion').val() === 1 && newData.child('project').isString() && newData.child('project').val() === '{\"_vantaChunked\":true}' && newData.hasChildren(['chunks', 'latest']) && newData.child('chunks').hasChild('manifest') && newData.child('latest').hasChildren(['revision', 'changeId', 'baseRevision', 'updatedAt', 'updatedBy', 'patch']) && newData.child('latest').child('revision').val() === newData.child('revision').val() && newData.child('latest').child('baseRevision').val() < newData.child('revision').val() && newData.child('latest').child('updatedAt').val() === newData.child('updatedAt').val() && newData.child('latest').child('updatedBy').val() === newData.child('updatedBy').val()))",
+              "revision": { ".validate": true },
+              "updatedAt": { ".validate": true },
+              "updatedBy": { ".validate": true },
+              "project": { ".validate": true },
+              "syncVersion": { ".validate": true },
+              "chunkVersion": { ".validate": true },
+              "chunks": {
+                "$chunk": {
+                  ".validate": "$chunk.matches(/^(manifest|(item|field)_[A-Za-z0-9_-]{1,510})$/) && newData.isString() && newData.val().length <= 1048576"
+                }
+              },
+              "latest": {
+                ".validate": "newData.hasChildren(['revision', 'changeId', 'baseRevision', 'updatedAt', 'updatedBy', 'patch']) && newData.child('revision').isNumber() && newData.child('changeId').isString() && newData.child('changeId').val().length >= 16 && newData.child('changeId').val().length <= 64 && newData.child('baseRevision').isNumber() && newData.child('baseRevision').val() >= 1 && newData.child('updatedAt').isNumber() && newData.child('updatedBy').isString() && newData.child('patch').isString() && newData.child('patch').val().length <= 2097152",
+                "revision": { ".validate": true },
+                "changeId": { ".validate": true },
+                "baseRevision": { ".validate": true },
+                "updatedAt": { ".validate": true },
+                "updatedBy": { ".validate": true },
+                "patch": { ".validate": true },
+                "$other": { ".validate": false }
+              },
+              "$other": { ".validate": false }
+            },
+            "participants": {
+              ".read": "auth != null && (auth.token.vanta_server === true || (auth.token.vanta_room === $session && auth.token.vanta_expires_at > now && auth.token.vanta_protocol === 3 && auth.token.vanta_release === 54))",
+              ".write": "auth != null && auth.token.vanta_server === true",
+              ".validate": "(!newData.child('0').exists() || !newData.child('1').exists() || (newData.child('0').child('uid').val() !== newData.child('1').child('uid').val() && newData.child('0').child('participantId').val() !== newData.child('1').child('participantId').val())) && (!newData.child('0').exists() || !newData.child('2').exists() || (newData.child('0').child('uid').val() !== newData.child('2').child('uid').val() && newData.child('0').child('participantId').val() !== newData.child('2').child('participantId').val())) && (!newData.child('0').exists() || !newData.child('3').exists() || (newData.child('0').child('uid').val() !== newData.child('3').child('uid').val() && newData.child('0').child('participantId').val() !== newData.child('3').child('participantId').val())) && (!newData.child('0').exists() || !newData.child('4').exists() || (newData.child('0').child('uid').val() !== newData.child('4').child('uid').val() && newData.child('0').child('participantId').val() !== newData.child('4').child('participantId').val())) && (!newData.child('1').exists() || !newData.child('2').exists() || (newData.child('1').child('uid').val() !== newData.child('2').child('uid').val() && newData.child('1').child('participantId').val() !== newData.child('2').child('participantId').val())) && (!newData.child('1').exists() || !newData.child('3').exists() || (newData.child('1').child('uid').val() !== newData.child('3').child('uid').val() && newData.child('1').child('participantId').val() !== newData.child('3').child('participantId').val())) && (!newData.child('1').exists() || !newData.child('4').exists() || (newData.child('1').child('uid').val() !== newData.child('4').child('uid').val() && newData.child('1').child('participantId').val() !== newData.child('4').child('participantId').val())) && (!newData.child('2').exists() || !newData.child('3').exists() || (newData.child('2').child('uid').val() !== newData.child('3').child('uid').val() && newData.child('2').child('participantId').val() !== newData.child('3').child('participantId').val())) && (!newData.child('2').exists() || !newData.child('4').exists() || (newData.child('2').child('uid').val() !== newData.child('4').child('uid').val() && newData.child('2').child('participantId').val() !== newData.child('4').child('participantId').val())) && (!newData.child('3').exists() || !newData.child('4').exists() || (newData.child('3').child('uid').val() !== newData.child('4').child('uid').val() && newData.child('3').child('participantId').val() !== newData.child('4').child('participantId').val()))",
+              "$slot": {
+                ".write": "auth != null && auth.token.vanta_room === $session && auth.token.vanta_expires_at > now && auth.token.vanta_protocol === 3 && auth.token.vanta_release === 54 && $slot.matches(/^[0-4]$/) && ((newData.exists() && (($slot === '0') || ($slot === '1' && data.parent().parent().child('meta').child('maxParticipants').val() >= 2) || ($slot === '2' && data.parent().parent().child('meta').child('maxParticipants').val() >= 3) || ($slot === '3' && data.parent().parent().child('meta').child('maxParticipants').val() >= 4) || ($slot === '4' && data.parent().parent().child('meta').child('maxParticipants').val() >= 5)) && newData.child('uid').val() === auth.uid && auth.token.vanta_participant === newData.child('participantId').val() && newData.child('protocolVersion').val() === 3 && newData.child('releaseVersion').val() === 54 && (!data.parent().parent().child('meta').hasChild('closingUntil') || data.parent().parent().child('meta').child('closingUntil').val() <= now) && (!data.exists() || data.child('uid').val() === auth.uid || data.child('expiresAt').val() <= now) && newData.child('expiresAt').val() > now && newData.child('expiresAt').val() <= now + 60000) || (!newData.exists() && (data.child('uid').val() === auth.uid || data.child('expiresAt').val() <= now)))",
+                ".validate": "!newData.exists() || (newData.hasChildren(['uid', 'participantId', 'protocolVersion', 'releaseVersion', 'joinedAt', 'expiresAt']) && newData.child('uid').isString() && newData.child('uid').val().length <= 128 && newData.child('participantId').isString() && newData.child('participantId').val().length >= 8 && newData.child('participantId').val().length <= 64 && (!newData.hasChild('name') || (newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 20)) && (!newData.hasChild('color') || (newData.child('color').isString() && newData.child('color').val().matches(/^#[0-9A-Fa-f]{6}$/))) && newData.child('protocolVersion').val() === 3 && newData.child('releaseVersion').val() === 54 && newData.child('joinedAt').isNumber() && newData.child('expiresAt').isNumber())",
+                "uid": { ".validate": true },
+                "participantId": { ".validate": true },
+                "protocolVersion": { ".validate": true },
+                "releaseVersion": { ".validate": true },
+                "name": { ".validate": true },
+                "color": { ".validate": true },
+                "joinedAt": { ".validate": true },
+                "expiresAt": { ".validate": true },
+                "$other": { ".validate": false }
+              }
+            },
+            "chat": {
+              ".read": "auth != null && (auth.token.vanta_server === true || (auth.token.vanta_room === $session && auth.token.vanta_expires_at > now && auth.token.vanta_protocol === 3 && auth.token.vanta_release === 54 && ((data.parent().child('participants').child('0').child('uid').val() === auth.uid && data.parent().child('participants').child('0').child('expiresAt').val() > now) || (data.parent().child('participants').child('1').child('uid').val() === auth.uid && data.parent().child('participants').child('1').child('expiresAt').val() > now) || (data.parent().child('participants').child('2').child('uid').val() === auth.uid && data.parent().child('participants').child('2').child('expiresAt').val() > now) || (data.parent().child('participants').child('3').child('uid').val() === auth.uid && data.parent().child('participants').child('3').child('expiresAt').val() > now) || (data.parent().child('participants').child('4').child('uid').val() === auth.uid && data.parent().child('participants').child('4').child('expiresAt').val() > now))))",
+              ".write": "auth != null && auth.token.vanta_server === true",
+              "messages": {
+                "$slot": {
+                  ".validate": "$slot.matches(/^[0-2]$/) && newData.hasChildren(['id', 'participantId', 'name', 'text', 'at']) && newData.child('id').isString() && newData.child('id').val().length >= 16 && newData.child('id').val().length <= 64 && newData.child('participantId').isString() && newData.child('participantId').val().length >= 8 && newData.child('participantId').val().length <= 64 && newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 20 && newData.child('text').isString() && newData.child('text').val().length >= 1 && newData.child('text').val().length <= 100 && newData.child('at').isNumber()",
+                  "id": { ".validate": true },
+                  "participantId": { ".validate": true },
+                  "name": { ".validate": true },
+                  "text": { ".validate": true },
+                  "at": { ".validate": true },
+                  "$other": { ".validate": false }
+                }
+              },
+              "$other": { ".validate": false }
+            },
+            "$other": { ".validate": false }
+          }
+        }
+      }
+    }
+  }
+}

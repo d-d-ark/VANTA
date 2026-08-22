@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "VANTA",
+  "version": "1.1.25",
+  "description": "궁극의 엔트리 VANTA Live",
+  "icons": {
+    "16": "assets/v-16.png",
+    "32": "assets/v-32.png",
+    "48": "assets/v-48.png",
+    "128": "assets/v-128.png"
+  },
+  "permissions": [
+    "storage",
+    "clipboardWrite"
+  ],
+  "host_permissions": [
+    "https://playentry.org/ws/*",
+    "https://llnk.kr/*",
+    "https://*.firebasedatabase.app/*"
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://playentry.org/ws/*"
+      ],
+      "js": [
+        "src/project-chunks.js",
+        "src/content.js"
+      ],
+      "css": [
+        "styles/vanta.css"
+      ],
+      "run_at": "document_start",
+      "all_frames": false
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/page-runtime.js",
+        "assets/vanta.svg",
+        "assets/V_2.svg"
+      ],
+      "matches": [
+        "https://playentry.org/*"
+      ]
+    }
+  ]
+}

@@ -1,27 +1,23 @@
-# VANTA
+# VANTA 공개 아카이브
 
-VANTA는 실시간 엔트리 워크스페이스 확장 프로그램입니다.
+VANTA는 playentry.org 워크스페이스에서 최대 5명이 함께 작업할 수 있도록 만든 실시간 협업 Chrome 확장 프로그램입니다. 이 저장소는 최종 기능판과 서버·Firebase 구성을 자신의 인프라에서 재현할 수 있도록 공개한 아카이브입니다.
 
-- 공식 소개: https://llnk.kr/vanta
-- 개인정보처리방침: https://llnk.kr/vanta/privacy
+## 포함된 버전
 
-## 저작권 및 이용 제한
+- `extension/`: 최종 기능판 **v1.1.25**
+- `server/api/v1/vanta/`: PHP API와 MySQL 스키마 생성 코드
+- `firebase/`: Sync와 Live Cursor용 Realtime Database 규칙 및 배포 도구
+- `sunset/vanta-v1.1.26/`: 설치된 확장 프로그램을 제거하는 종료 업데이트 소스
+- `release/VANTA-v1.1.26.zip`: Chrome Web Store 제출용 종료 업데이트
 
-Copyright © 2026 Dark. All rights reserved.
+## 직접 실행하기
 
-VANTA와 VANTA에 포함된 소스 코드, 확장 프로그램 파일, 디자인, 로고 및 문서의 모든 권리는 저작권자에게 있습니다.
+1. PHP 8.1 이상, MySQL 8/MariaDB 10.6 이상과 Firebase Realtime Database 프로젝트를 준비합니다.
+2. `server/config.example.php`를 `server/config.php`로 복사하고 자신의 DB·Firebase 서비스 계정·무작위 비밀값을 입력합니다.
+3. 웹 루트를 `server/`로 지정하고 `firebase/README.md`에 따라 자신의 프로젝트에 규칙을 배포합니다.
+4. `extension/src/background.js`의 API 기준 주소를 자신의 도메인으로 변경합니다.
+5. Chrome에서 `extension/`을 압축하거나 개발자 모드로 로드합니다.
 
-저작권자의 사전 서면 허가 없이는 다음 행위를 할 수 없습니다.
+실제 LLNKKR DB, Firebase 키·서비스 계정, 채팅·IP·사용량 데이터, 운영 로그와 배포 비밀은 포함하지 않습니다.
 
-- 전체 또는 일부를 복사, 수정, 재배포하거나 공개하는 행위
-- 판매, 재판매, 대여, 재라이선스 또는 상업적으로 이용하는 행위
-- 소스 코드나 구성요소를 다른 프로젝트에 사용하는 행위
-- 파생 프로그램 또는 파생 저작물을 제작하는 행위
-- 역설계, 디컴파일 또는 보호 장치를 우회하는 행위
-- VANTA의 이름, 로고 또는 디자인을 모방하거나 별도 서비스에 사용하는 행위
-
-이 저장소와 배포 파일이 공개되어 있다는 사실은 어떠한 사용권, 소유권 또는 재배포 권한도 부여하지 않습니다.
-
-사용자는 공식적으로 배포된 VANTA 확장 프로그램을 변경하지 않은 상태로 VANTA의 본래 기능을 이용하기 위한 목적으로만 설치하고 사용할 수 있습니다. 그 밖의 모든 이용은 금지됩니다.
-
-이 프로젝트에는 MIT, GPL 또는 그 밖의 오픈 소스 라이선스가 적용되지 않습니다.
+코드는 [MIT License](LICENSE)로 공개합니다. VANTA 명칭과 로고는 [TRADEMARKS.md](TRADEMARKS.md)를 따릅니다.

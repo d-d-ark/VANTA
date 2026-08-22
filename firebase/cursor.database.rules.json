@@ -1,0 +1,41 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "vanta": {
+      "chat": {
+        ".read": false,
+        ".write": false
+      },
+      "cursors": {
+        "$room": {
+          ".read": "auth != null && auth.token.vanta_cursor_room == $room && auth.token.vanta_cursor_release == 54 && auth.token.vanta_cursor_expires_at > now",
+          "$participant": {
+            ".write": "auth != null && auth.token.vanta_cursor_room == $room && auth.token.vanta_cursor_participant == $participant && auth.token.vanta_cursor_release == 54 && auth.token.vanta_cursor_expires_at > now",
+            ".validate": "!newData.exists() || newData.hasChildren(['participantId','connectionId','seq','name','color','area','sceneKey','objectKey','blockKey','x','y','visible','at'])",
+            "participantId": { ".validate": "newData.isString() && newData.val() == $participant" },
+            "connectionId": { ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9_-]{16,64}$/)" },
+            "seq": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 2147483647" },
+            "name": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 20" },
+            "color": { ".validate": "newData.isString() && newData.val().matches(/^#[0-9A-Fa-f]{6}$/)" },
+            "area": { ".validate": "newData.isString() && newData.val().matches(/^(viewport|stage|scenes|enginebar|objects|properties|tabs|blockmenu|codeboard|playground)$/)" },
+            "sceneKey": { ".validate": "newData.isString() && (newData.val() == '' || newData.val().matches(/^[a-f0-9]{6}$/))" },
+            "objectKey": { ".validate": "newData.isString() && (newData.val() == '' || newData.val().matches(/^[a-f0-9]{6}$/))" },
+            "blockKey": { ".validate": "newData.isString() && (newData.val() == '' || newData.val().matches(/^[a-f0-9]{8}$/))" },
+            "x": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1" },
+            "y": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1" },
+            "fallbackX": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1" },
+            "fallbackY": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1" },
+            "dragging": { ".validate": "newData.isBoolean()" },
+            "dragBlockKey": { ".validate": "newData.isString() && newData.val().matches(/^[a-f0-9]{8}$/)" },
+            "dragOffsetX": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1" },
+            "dragOffsetY": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1" },
+            "visible": { ".validate": "newData.isBoolean()" },
+            "at": { ".validate": "newData.isNumber() && newData.val() >= now - 60000 && newData.val() <= now + 10000" },
+            "$other": { ".validate": false }
+          }
+        }
+      }
+    }
+  }
+}

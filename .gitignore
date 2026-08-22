@@ -1,0 +1,17 @@
+server/config.php
+config.php
+.env
+*.log
+*.pem
+*.key
+*.json.key
+*service-account*.json
+node_modules/
+deploy-backups/
+__pycache__/
+.DS_Store
+Thumbs.db
+
+*.zip
+!release/
+!release/*.zip

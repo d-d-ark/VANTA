@@ -1,0 +1,9 @@
+{
+  "manifest_version": 3,
+  "name": "VANTA",
+  "version": "1.1.26",
+  "description": "서비스 종료를 위해 설치된 확장 프로그램을 안전하게 제거합니다.",
+  "background": {
+    "service_worker": "background.js"
+  }
+}
